@@ -1,26 +1,11 @@
-import { useEffect, useState } from "react";
-import { socket } from "./socket";
+import ChatRoom from "./components/ChatRoom";
+import socketIO from "socket.io-client";
+// const socket = socketIO.connect("http://localhost:3000");
 
 function App() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-
-  useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    function onFooEvent(value) {
-      setFooEvents((previous) => [...previous, value]);
-    }
-  }, []);
-
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <ChatRoom />
     </>
   );
 }
