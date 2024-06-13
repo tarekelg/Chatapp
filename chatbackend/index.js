@@ -11,6 +11,8 @@ const io = new Server(httpServer, {
   },
 });
 
+let users = [];
+
 io.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
@@ -18,14 +20,27 @@ io.on("connection", (socket) => {
   // may or may not be similar to the count of Socket instances in the main namespace, depending on your usage
   const count2 = io.of("/").sockets.size;
 
+  //Listens when a new user joins the server
+  socket.on("newUser", (data) => {
+    users.push(data);
+    console.log(users);
+    //Sends the list of users to the client
+    io.emit("newUserResponse", users);
+  });
+
   socket.on("message", (data) => {
     console.log(data);
+    io.emit("messageResponse", data);
   });
 
   socket.on("disconnect", () => {
     console.log("🔥: A user disconnected");
-    console.log(`${io.engine.clientsCount} user are connected`);
-    console.log(io.of("/").sockets.size);
+    //Updates the list of users when a user disconnects from the server
+    users = users.filter((user) => user.socketID !== socket.id);
+    //Sends the list of users to the client
+    io.emit("newUserResponse", users);
+    // console.log(`${io.engine.clientsCount} user are connected`);
+    // console.log(io.of("/").sockets.size);
   });
 });
 

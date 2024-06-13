@@ -1,22 +1,30 @@
 import { useEffect } from "react";
 import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Home = ({ socket }) => {
   const { username, setUsername } = useUser();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(username);
   }, [username]);
 
   function handleInputChange(e) {
+    e.preventDefault;
     console.log(e.target.value);
     setUsername(e.target.value);
   }
 
-  function onSubmitUsername(e) {
-    e.preventDefault;
+  async function onSubmitUsername(e) {
+    e.preventDefault();
     // save in local storage
-    localStorage.setItem("username", username);
+    //or in mongoDB
+    localStorage.setItem("userName", username);
+
+    await socket.emit("newUser", { username, socketID: socket.id });
+    navigate("/chat", { replace: true });
   }
 
   return (
@@ -42,7 +50,7 @@ const Home = () => {
         <input
           type="text"
           id="website-admin"
-          classNameName="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Bonnie Green"
           onChange={handleInputChange}
         />
