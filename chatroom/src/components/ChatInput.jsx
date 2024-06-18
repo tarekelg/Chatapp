@@ -1,6 +1,24 @@
-const ChatInput = () => {
+import { useState } from "react";
+import { useUser } from "../context/UserContext";
+const ChatInput = ({ socket }) => {
+  const [message, setMessage] = useState("");
+  const { username } = useUser();
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (message.trim() && localStorage.getItem("userName")) {
+      socket.emit("message", {
+        text: message,
+        name: username,
+        id: `${socket.id}${Math.random()}`,
+        socketID: socket.id,
+      });
+    }
+    console.log({ userName: localStorage.getItem("userName"), message });
+    setMessage("");
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <label for="chat" className="sr-only">
         Your message
       </label>
@@ -63,6 +81,7 @@ const ChatInput = () => {
           rows="1"
           className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Your message..."
+          onChange={(e) => setMessage(e.target.value)}
         ></textarea>
         <button
           type="submit"

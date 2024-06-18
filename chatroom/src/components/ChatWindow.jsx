@@ -2,10 +2,37 @@ import ChatBubble from "./ChatBubble";
 import ChatBubbleMe from "./ChatBubbleMe";
 import messages from "../../data/messages";
 
-const ChatWindow = () => {
+const ChatWindow = ({ messages, socket }) => {
+  console.log(messages);
   return (
     <div className="bg-slate-700 flex-1 overflow-y-scroll">
       {messages.map((message, index) => {
+        if (socket.id === message.socketID) {
+          return (
+            <ChatBubbleMe
+              key={index}
+              username={message.name}
+              message={message.text}
+            />
+          );
+        } else {
+          return (
+            <ChatBubble
+              key={index}
+              username={message.name}
+              message={message.text}
+            />
+          );
+        }
+      })}
+    </div>
+  );
+};
+
+export default ChatWindow;
+
+{
+  /* {messages.map((message, index) => {
         if ((index > 0 && index % 2 === 0) || index === 0) {
           return (
             <ChatBubble
@@ -18,14 +45,10 @@ const ChatWindow = () => {
           return (
             <ChatBubbleMe
               key={index}
-              username={message.username}
-              message={message.message}
+              username={messages.username}
+              message={messages.message}
             />
           );
         }
-      })}
-    </div>
-  );
-};
-
-export default ChatWindow;
+      })} */
+}
