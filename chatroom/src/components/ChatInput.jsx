@@ -3,6 +3,7 @@ import { useUser } from "../context/UserContext";
 const ChatInput = ({ socket }) => {
   const [message, setMessage] = useState("");
   const { username } = useUser();
+
   function handleSubmit(e) {
     e.preventDefault();
     if (message.trim() && localStorage.getItem("userName")) {
